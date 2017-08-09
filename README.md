@@ -1,37 +1,86 @@
-## Welcome to GitHub Pages
+# Lab 1: Hello World with Johnny Five
 
-You can use the [editor on GitHub](https://github.com/maxmiaggi/johnnyfive-iot-class-masters2017/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## Objective
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+The objectives of this lab are:
 
-### Markdown
+1. Create a Hello World application using Johnny Five.
+2. Blink an LED on Arduino Uno board while being controlled by a client.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+![Lab 1 Objectives](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/lab1_objectives.png)
 
-```markdown
-Syntax highlighted code block
+## Step 1 - System Setup
 
-# Header 1
-## Header 2
-### Header 3
+This step is required to install all the necessary files and set up the system.
 
-- Bulleted
-- List
+**Note:** This step has already been performed on your computer for MASTERs. This step is included to give you an overall perspective. You can follow these steps to set up your personal computer later on.
 
-1. Numbered
-2. List
+1. Install NodeJS (LTS version) from https://nodejs.org/ 
+2. Install Johnny Five via Node Package Manager (NPM) through Command Prompt.
+  ```
+  npm install johnny-five
+  ```    
+3. Install PubNub via NPM through Command Prompt (**Note**: PubNub is not used in this lab. It will be used in next lab).
+	```bash
+	npm install pubnub
+	``` 
 
-**Bold** and _Italic_ and `Code` text
+## Step 2 - Burn Firmata onto Arduino board
 
-[Link](url) and ![Image](src)
-```
+1. Log into [Arduino Create](https://create.arduino.cc/) and click on **Arduino Web Editor**.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+	![Arduino Create](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/arduino_create.png)
 
-### Jekyll Themes
+	![Arduino Web Editor](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/arduino_web_editor.png)
+    
+2. Install the [Arduino Web Editor Plugin](http://create.arduino.cc/getting-started/plugin). **This is already done for MASTERs computers. Go to next step.**
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/maxmiaggi/johnnyfive-iot-class-masters2017/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+	![Arduino Plugin Install](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/arduino_plugin_install.png)
 
-### Support or Contact
+3. Connect your Arduino Uno board to the computer. Arduino Create should now automatically detect the COM port the board is connected to.
+4. Upload Firmata onto Arduino by following 5 simple steps as shown below:
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+	![Upload Firmata](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/upload_firmata.png)
+   
+That's it for Arduino side. You can now close Arduino Create - we won't need it any more for this class.
+    
+## Step 3 - Client side code using Johnny Five
+1. Create a file blink.js and type the following code (or navigate to the Labs folder and open the code):
+
+    ``` javascript
+    var five = require('johnny-five');
+    var board = new five.Board();
+    // Specify COM port if needed 
+    // var board = new five.Board({ port: "COM14" });
+
+    board.on('ready', function() {
+      var led = new five.Led(13); // pin 13
+      led.blink(500); 			  // 500ms interval
+    });
+    ```
+
+1. Run the code by executing the following command:
+
+    ```
+    node blink.js
+    ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
