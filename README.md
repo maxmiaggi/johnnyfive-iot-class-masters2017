@@ -84,7 +84,7 @@ For this lab, we are using [PubNub](https://www.pubnub.com/) as the MQTT broker.
 
 Since we are controlling a remote hardware over the web, we need to have a GUI on the web to publish commands. The browser-side GUI requires HTML, CSS and JavaScript.
 
-We are going to create a very simple web page which will have a simple button. When we click on the button, it publishes blinkState to PubNub (MQTT broker).
+We are going to create a very simple web page which will have a simple button. When we click on the button, it publishes blinkState to PubNub (MQTT broker). You can use [Codepen](https://codepen.io/pen/) to type in the code.
 
 ### HTML Code
 
@@ -153,6 +153,135 @@ button.addEventListener("click", function(e) {
   );
 });
 ```
+
+### All-in-one Code
+
+If you want to host the web page on your own server, you will need to create a single HTML file and include all your HTML/CSS/JS in that one file, or create separate .html, .css, and .js files and call them from the HTML file. Here's how a single HTML file would look like:
+
+**File Name: blink-remote-client.html**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remote LED Blink</title>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.13.0.min.js"></script>
+  <style type='text/css'>
+    button {
+      font-size: 2em;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Prototyping IoT Demo UI</h1>
+  <button class="on">Blink LED</button>
+
+
+  <script type='text/javascript'>
+    var pubnub = new PubNub({
+      subscribeKey: "sub-c-801ccfbc-...", // always required
+      publishKey: "pub-c-cfd2c879-..." // only required if publishing
+    });
+
+    var channel = "led";
+    var button = document.querySelector("button.on");
+    var blinkState = true;
+
+    button.addEventListener("click", function(e) {
+      pubnub.publish(
+        {
+          channel: channel,
+          message: { blink: blinkState }
+        },
+        function(m) {
+          console.log(m);
+          blinkState = !blinkState;
+          button.textContent = blinkState ? "Blink LED" : "Stop LED";
+        }
+      );
+    });
+
+  </script>
+</body>
+</html>
+```
+
+
+## Server-side Node.js
+
+On your server (the host computer), you'll need to write a JavaScript code using Johnny Five library to perform the following functions:
+
+- Subscribe and listen to messages from MQTT broker (PubNub)
+- Talk to the microcontroller/Arduino4
+
+**File Name: blink-remote.js**
+
+```javascript
+// Include Johnny Five library
+var five = require('johnny-five');
+
+// Initialize board (specify COM port if J5 cannot find it)
+// var board = new five.Board({ port: "COM14" });
+var board = new five.Board();
+
+// Initialize PubNub
+var PubNub = require("pubnub");
+var pubnub = new PubNub({
+    ssl          : true,  // <- enable TLS Tunneling over TCP
+    publishKey   : "pub-c-cfd2c879-...",  // use your own keys
+    subscribeKey : "sub-c-801ccfbc-..."
+});
+
+// Specify which topic/channel to subscribe to
+var channel = 'led';
+
+// Everything inside here runs on the J5 initialized board
+board.on('ready', function() {
+  // LED on pin 13
+  var led = new five.Led(13);
+
+  // Listener listens to subscribed messages and executes
+  // whenever there is data available on the channel
+  pubnub.addListener({
+    message: function(m) {
+      // Check for received message. If true, blink. Otherwise LED off.
+      if(m.message.blink == true) {
+        led.blink(500);
+      } else {
+        led.stop();
+        led.off();
+      }
+    }
+  });
+
+  // Subscribe to a channel
+  pubnub.subscribe({
+    channels: [channel],
+  });
+
+
+});
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
