@@ -86,6 +86,8 @@ Since we are controlling a remote hardware over the web, we need to have a GUI o
 
 We are going to create a very simple web page which will have a simple button. When we click on the button, it publishes blinkState to PubNub (MQTT broker). You can use [Codepen](https://codepen.io/pen/) to type in the code.
 
+**File Name: blink-remote-client-html.html**
+
 ### HTML Code
 
 The following HTML code creates a very simple button.
@@ -105,6 +107,8 @@ The following HTML code creates a very simple button.
 
 The following CSS code applies very simple styling to the button we created above.
 
+**File Name: blink-remote-client-css.css**
+
 ```css
 /* This styling applies to all buttons on the page */
 button {
@@ -116,6 +120,8 @@ button {
 ### JavaScript Code
 
 The following JS code makes the button we created earlier functional.
+
+**File Name: blink-remote-client-js.js**
 
 ```javascript
 // Initialize PubNub
@@ -230,8 +236,8 @@ var board = new five.Board();
 // Initialize PubNub
 var PubNub = require("pubnub");
 var pubnub = new PubNub({
-    ssl          : true,  // <- enable TLS Tunneling over TCP
-    publishKey   : "pub-c-cfd2c879-...",  // use your own keys
+    ssl          : true,  // <- enable TLS Tunneling over TCP
+    publishKey   : "pub-c-cfd2c879-...",  // use your own keys
     subscribeKey : "sub-c-801ccfbc-..."
 });
 
