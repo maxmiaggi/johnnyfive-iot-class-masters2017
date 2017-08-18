@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Sensor Data from Arduino</title>
+  <script type="text/javascript" src="http://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+  <link type="text/css" rel="stylesheet" href="http://pubnub.github.io/eon/v/eon/1.0.0/eon.css" />
+  <style type='text/css'>
+    * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+    html, body { margin: 0; padding:0 }
+    body {
+        font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', 'Roboto Light', 'Segoe UI Web Light', 'Segoe UI Light', 'Segoe UI Web Regular', 'Segoe UI', Helvetica, Arial, sans-serif;
+        margin: 1em;
+      }
+      h1 {
+      font-weight: 200;
+      }
+    #chart {
+      position: absolute;
+      top: 25%;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+    }
+    #temp, #light, #pot {
+      flex: 1;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Sensor Data from Arduino</h1>
+</header>
+
+<div id="chart">
+  <div id="light"></div>
+  <div id="temp"></div>
+  <div id="pot"></div>
+</div>
+
+<script type='text/javascript'>
+  var pubnub = new PubNub({
+    subscribeKey : "sub-c-486be1d0-5c63-11e7-b272-02ee2ddab7fe"
+  });
+
+  var channel = 'temperature-photoresistor';
+
+  eon.chart({
+    channels: [channel],
+    flow: true,
+    generate: {
+      bindto: '#light',
+      data: {
+        type: 'spline'
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%H:%m:%S',
+            fit: true
+          },
+          label: {
+            text: 'Light over time'
+          }
+        },
+        y: {
+          label: {
+            text: 'Lumens',
+            position: 'outer-middle'
+          },
+          tick: {
+            format: function (d) {
+              var df = Number( d3.format('.2f')(d) );
+              return df;
+            }
+          }
+        }
+      }
+    },
+    pubnub: pubnub,
+    limit: 10,
+    transform: function(m) {
+      return { eon: {
+        light: m.eon.light
+      }}
+    }
+  });
+
+  eon.chart({
+    channels: [channel],
+    flow: true,
+    generate: {
+      bindto: '#temp',
+      data: {
+        type: 'spline',
+        colors: {
+          temperature: 'deeppink'
+        }
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%H:%m:%S',
+            fit: true
+          },
+          label: {
+            text: 'Temperature over time',
+          }
+        },
+        y: {
+          label: {
+            text: 'Celsius',
+            position: 'outer-middle'
+          },
+          tick: {
+            format: function (d) {
+              var df = Number( d3.format('.2f')(d) );
+              return df;
+            }
+          }
+        }
+      }
+    },
+    pubnub: pubnub,
+    limit: 30,
+    transform: function(m) {
+      return { eon: {
+        temperature: m.eon.temperature
+      }}
+    }
+  });
+
+  eon.chart({
+    channels: ['potentiometer'],
+    rate: 10,
+    generate: {
+      bindto: '#pot',
+      data: {
+        type:'gauge'
+      },
+      gauge: {
+        label:{
+          format: function(value, ratio){
+            return value; //returning here the value, not in %
+          }
+        },
+        min: 0,
+        max: 1023
+      },
+      color: {
+        pattern: ['#FF0000', '#F6C600', '#60B044'],
+        threshold: {
+          values: [341, 682]
+        }
+      }
+    },
+    pubnub: pubnub
+  });
+</script>
+</body>
+</html>

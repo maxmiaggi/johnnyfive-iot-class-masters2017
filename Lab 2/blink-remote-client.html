@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remote LED Blink</title>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.8.0.min.js"></script>
+  <style type='text/css'>
+    button {
+      font-size: 2em;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Prototyping IoT Demo UI</h1>
+  <button class="on">Blink LED</button>
+
+
+  <script type='text/javascript'>
+    var pubnub = new PubNub({
+      subscribeKey: "sub-c-801ccfbc-41a2-11e7-bc55-0619f8945a4f", // always required
+      publishKey: "pub-c-cfd2c879-04ee-40ad-bf7f-6d4df977ff7a" // only required if publishing
+    });
+
+    var channel = "led";
+    var button = document.querySelector("button.on");
+    var blinkState = true;
+
+    button.addEventListener("click", function(e) {
+      pubnub.publish(
+        {
+          channel: channel,
+          message: { blink: blinkState }
+        },
+        function(m) {
+          console.log(m);
+          blinkState = !blinkState;
+          button.textContent = blinkState ? "Blink LED" : "Stop LED";
+        }
+      );
+    });
+
+  </script>
+</body>
+</html>
