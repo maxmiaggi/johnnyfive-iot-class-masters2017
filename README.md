@@ -1,3 +1,11 @@
+# Getting Started with Johnny Five - The JavaScript Robotics and IoT Platform - Official Lab Manual
+
+This web page acts as a guide for the labs for this Evening Class as Microchip MASTERs 2017.
+
+*Contact Information:
+Max Prasad
+Max.Prasad@microchip.com*
+
 # Lab 1: Hello World with Johnny Five
 
 ## Objective
@@ -271,6 +279,16 @@ board.on('ready', function() {
 
 });
 ```
+
+## Screenshot
+
+
+![Lab 2 Screenshot 1](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/lab2_screenshot_1.png)
+![Lab 2 Screenshot 2](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/lab2_screenshot_2.png)
+
+## Working
+
+When you click on the "Blink LED" button, the browser will publish the status to the PubNub's data stream network. The host computer connected to the Arduino will read the status and respond accordingly.
 
 # Lab 3: IoT Sensor Data Visualization
 
@@ -774,7 +792,9 @@ If you want to host the web page on your own server, you will need to create a s
 
 ![Lab 3 Screenshot](https://maxmiaggi.github.io/johnnyfive-iot-class-masters2017/Images/lab3_screenshot_1.png)
 
+## Working
 
+Arduino will read the data from the three sensors based on the commands from Johnny Five. The Node.js code will then publish the data to PubNub's real-time data stream network. The remote computer on the other side will read the data and display them beautifully on a chart based on the HTML/CSS/JS code.
 
 
 
